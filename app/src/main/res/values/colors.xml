@@ -1,0 +1,15 @@
+<resources>
+    <!-- Те же токены, что на сайте ITDO ([data-theme=dark] в assets/css/app.css) -->
+    <color name="bg_primary">#22190F</color>
+    <color name="bg_secondary">#2B2015</color>
+    <color name="text_primary">#F0E4D0</color>
+    <color name="text_secondary">#AB9578</color>
+    <color name="accent_primary">#D68A4C</color>
+    <color name="accent_secondary">#B0602F</color>
+    <color name="accent_hover">#E3A066</color>
+    <color name="accent_like">#E0685A</color>
+    <color name="block_bg">#22190F</color>
+    <color name="block_bg_secondary">#2B2015</color>
+    <color name="block_hover_bg">#33261A</color>
+    <color name="chat_window">#180F08</color>
+</resources>
