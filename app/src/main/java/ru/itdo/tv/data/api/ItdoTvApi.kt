@@ -6,9 +6,7 @@ import ru.itdo.tv.data.dto.StreamsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-/**
- * Публичный API /api/tv/* на сервере ITDO — без авторизации, только чтение.
- */
+// Публичный API в папке api/tv на сервере ITDO — без авторизации, только чтение.
 interface ItdoTvApi {
 
     @GET("streams.php")
