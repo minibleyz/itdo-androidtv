@@ -62,6 +62,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 
+    // Обычный Material3 нужен только для OutlinedTextField на экране поиска —
+    // у Compose for TV нет своего текстового поля.
+    implementation("androidx.compose.material3:material3")
+
     // Compose for TV
     implementation("androidx.tv:tv-foundation:1.0.0-alpha10")
     implementation("androidx.tv:tv-material:1.0.0")
