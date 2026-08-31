@@ -16,6 +16,7 @@ android {
         versionName = "1.0.0"
 
         buildConfigField("String", "API_BASE_URL", "\"https://itdo.bleyzos.ru/api/tv/\"")
+        buildConfigField("String", "SITE_API_BASE_URL", "\"https://itdo.bleyzos.ru/api/\"")
     }
 
     buildTypes {
@@ -81,7 +82,10 @@ dependencies {
     // Images
     implementation("io.coil-kt:coil-compose:2.6.0")
 
-    // Media3 / ExoPlayer (HLS)
+    // Генерация QR-кода для экрана входа
+    implementation("com.google.zxing:core:3.5.3")
+
+    // Media3 / ExoPlayer (HLS + аудио)
     implementation("androidx.media3:media3-exoplayer:1.4.1")
     implementation("androidx.media3:media3-exoplayer-hls:1.4.1")
     implementation("androidx.media3:media3-ui:1.4.1")
