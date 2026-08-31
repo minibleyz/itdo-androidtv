@@ -1,5 +1,6 @@
 package ru.itdo.tv.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,7 @@ fun HomeScreen(
     onOpenStream: (Stream) -> Unit,
     onOpenClip: (Clip) -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize().background()) {
+    Box(modifier = Modifier.fillMaxSize().background(ItdoColors.BgPrimary)) {
         when (state) {
             is HomeUiState.Loading -> LoadingState()
             is HomeUiState.Error -> ErrorState(state.message, onRefresh)
@@ -162,5 +163,3 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
         Button(onClick = onRetry) { Text("Повторить") }
     }
 }
-
-private fun Modifier.background() = this.then(Modifier.background(ItdoColors.BgPrimary))
