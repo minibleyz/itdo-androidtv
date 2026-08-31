@@ -3,15 +3,16 @@ package ru.itdo.tv
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.itdo.tv.di.SimpleViewModelFactory
 import ru.itdo.tv.domain.model.Clip
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ItdoTvTheme {
-                var screen by rememberSaveable(stateSaver = ScreenSaver) { mutableStateOf<Screen>(Screen.Home) }
+                var screen by remember { mutableStateOf<Screen>(Screen.Home) }
 
                 val homeViewModel: HomeViewModel = viewModel(
                     factory = SimpleViewModelFactory {
@@ -51,10 +52,19 @@ class MainActivity : ComponentActivity() {
                     }
                 )
 
-                // Обновляем ленту при каждом возврате на экран Home (без фонового поллинга).
+                // Обновляем ленту каждый раз, когда мы возвращаемся на Home или приложение
+                // возобновляется (onResume) пока мы на Home — без фонового поллинга.
+                val isHome = screen is Screen.Home
+                LaunchedEffect(isHome) {
+                    if (isHome) homeViewModel.refresh()
+                }
                 val lifecycleOwner = LocalLifecycleOwner.current
-                DisposableResumeEffect(screen is Screen.Home) {
-                    homeViewModel.refresh()
+                DisposableEffect(lifecycleOwner, isHome) {
+                    val observer = LifecycleEventObserver { _, event ->
+                        if (isHome && event == Lifecycle.Event.ON_RESUME) homeViewModel.refresh()
+                    }
+                    lifecycleOwner.lifecycle.addObserver(observer)
+                    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                 }
 
                 when (val s = screen) {
@@ -106,24 +116,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-/** Вызывает [onResume] каждый раз, когда условие [active] становится true и экран в фокусе. */
-@androidx.compose.runtime.Composable
-private fun DisposableResumeEffect(active: Boolean, onResume: () -> Unit) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(active) {
-        if (active) onResume()
-    }
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner, active) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (active && event == Lifecycle.Event.ON_RESUME) onResume()
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        androidx.compose.runtime.DisposableEffectResult { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-}
-
-private val ScreenSaver = androidx.compose.runtime.saveable.Saver<androidx.compose.runtime.MutableState<Screen>, Nothing>(
-    save = { null },
-    restore = { null },
-)
